@@ -1,0 +1,15 @@
+.cell {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 1px solid;
+    transition: background-color 0.15s;
+}
+
+.empty {
+    background-color: yellow;
+}
+
+.full {
+    background-color: green;
+}
