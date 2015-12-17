@@ -13,8 +13,9 @@ var GameOfLife = React.createClass({
             var row = this.props.grid[r];
             for (var c = 0; c < row.length; c++) {
                 var key = r + "x" + c;
-                rowCells.push(<Cell key={key} state={row[c]}/>);
+                rowCells.push(<Cell key={key} row={r} col={c} state={row[c]}/>);
             }
+            var key = "row-" + r;
             table.push(<div key={key} className="row">{rowCells}</div>)
         }
         return (
