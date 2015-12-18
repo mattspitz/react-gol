@@ -1,3 +1,7 @@
+var classNames = require('classnames');
+var React = require('react');
+var ReactDOM = require('react-dom');
+
 var NUM_ROWS = 45;
 var NUM_COLS = 90;
 var INITIAL_FILL_PCT = 0.2;
@@ -76,34 +80,31 @@ var GameOfLife = React.createClass({
     },
 
     render: function() {
-        var table = [];
-        for (var r = 0; r < this.state.grid.length; r++) {
-            var rowCells = [];
-            var row = this.state.grid[r];
-            for (var c = 0; c < row.length; c++) {
-                var key = r + "x" + c;
-                rowCells.push(<Cell key={key} row={r} col={c} state={row[c]}/>);
-            }
-            var key = "row-" + r;
-            table.push(<div key={key} className="row">{rowCells}</div>)
-        }
-        return (
-            <div>{table}</div>
-        )
+        var rows = this.state.grid.map((row, index) => {
+            return <Row key={index} cells={row} />;
+        });
+        return <div>{rows}</div>
+    }
+});
+
+var Row = React.createClass({
+    render: function() {
+        var cells = this.props.cells.map((cell, index) => {
+            return <Cell key={index} state={cell} />;
+        });
+        return <div>{cells}</div>;
     }
 });
 
 var Cell = React.createClass({
     render: function() {
-        // there has to be a better way to initialize this
-        var stateClassMap = {};
-        stateClassMap[EMPTY] = "empty";
-        stateClassMap[FULL] = "full";
-
-        var key = this.props.row + "x" + this.props.col;
-        var classes = "cell " + stateClassMap[this.props.state];
+        var classes = classNames({
+            cell: true,
+            empty: this.props.state === EMPTY,
+            full: this.props.state === FULL
+        });
         return (
-            <div key={key} className={classes}></div>
+            <div className={classes}></div>
        )
     }
 });
