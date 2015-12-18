@@ -77,7 +77,7 @@ var GameOfLife = React.createClass({
             this.setState({
                 grid: updateGrid(this.state.grid.slice(0))
             });
-        }, 750);
+        }, 300);
     },
 
     render: function() {
