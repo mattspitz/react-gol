@@ -1,43 +1,14 @@
+var classNames = require('classnames');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var _ = require('underscore');
+
 var NUM_ROWS = 45;
 var NUM_COLS = 90;
 var INITIAL_FILL_PCT = 0.2;
 
 var EMPTY = 1;
 var FULL = 2;
-
-var GameOfLife = React.createClass({
-    render: function() {
-        var table = [];
-        for (var r = 0; r < this.props.grid.length; r++) {
-            var rowCells = [];
-            var row = this.props.grid[r];
-            for (var c = 0; c < row.length; c++) {
-                var key = r + "x" + c;
-                rowCells.push(<Cell key={key} row={r} col={c} state={row[c]}/>);
-            }
-            var key = "row-" + r;
-            table.push(<div key={key} className="row">{rowCells}</div>)
-        }
-        return (
-            <div>{table}</div>
-        )
-    }
-});
-
-var Cell = React.createClass({
-    render: function() {
-        // there has to be a better way to initialize this
-        var stateClassMap = {};
-        stateClassMap[EMPTY] = "empty";
-        stateClassMap[FULL] = "full";
-
-        var key = this.props.row + "x" + this.props.col;
-        var classes = "cell " + stateClassMap[this.props.state];
-        return (
-            <div key={key} className={classes}></div>
-       )
-    }
-});
 
 function initializeGrid() {
     var grid = [];
@@ -96,16 +67,57 @@ function updateGrid(oldGrid) {
     return newGrid;
 }
 
-function main() {
-    var gridHolder = [initializeGrid()];
-    setInterval(function() {
-        gridHolder[0] = updateGrid(gridHolder[0]);
+var GameOfLife = React.createClass({
+    getInitialState: function() {
+        return {grid: initializeGrid()};
+    },
 
-        ReactDOM.render(
-            <GameOfLife grid={gridHolder[0]} />,
-            document.getElementById("container")
-        );
-    }, 750);
-}
+    componentDidMount: function() {
+        setInterval(() => {
+            var clonedGrid = this.state.grid.map((arr) => arr.slice(0));
+            this.setState({
+                grid: updateGrid(clonedGrid)
+            });
+        }, 300);
+    },
 
-main();
+    render: function() {
+        var rows = this.state.grid.map((row, index) => {
+            return <Row key={index} cells={row} />;
+        });
+        return <div>{rows}</div>
+    }
+});
+
+var Row = React.createClass({
+    shouldComponentUpdate: function(nextProps) {
+        return !_.isEqual(this.props.cells, nextProps.cells);
+    },
+    render: function() {
+        var cells = this.props.cells.map((cell, index) => {
+            return <Cell key={index} state={cell} />;
+        });
+        return <div className='row'>{cells}</div>;
+    }
+});
+
+var Cell = React.createClass({
+    shouldComponentUpdate: function(nextProps) {
+        return this.props.state !== nextProps.state;
+    },
+    render: function() {
+        var classes = classNames({
+            cell: true,
+            empty: this.props.state === EMPTY,
+            full: this.props.state === FULL
+        });
+        return (
+            <div className={classes}></div>
+       )
+    }
+});
+
+ReactDOM.render(
+    <GameOfLife />,
+    document.getElementById("container")
+);
