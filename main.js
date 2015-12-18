@@ -74,8 +74,9 @@ var GameOfLife = React.createClass({
 
     componentDidMount: function() {
         setInterval(() => {
+            var clonedGrid = this.state.grid.map((arr) => arr.slice(0));
             this.setState({
-                grid: updateGrid(this.state.grid.slice(0))
+                grid: updateGrid(clonedGrid)
             });
         }, 300);
     },
