@@ -96,7 +96,7 @@ var Row = React.createClass({
         var cells = this.props.cells.map((cell, index) => {
             return <Cell key={index} state={cell} />;
         });
-        return <div>{cells}</div>;
+        return <div className='row'>{cells}</div>;
     }
 });
 

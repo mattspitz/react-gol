@@ -1,7 +1,9 @@
-.cell {
-    display: inline-block;
-    width: 12px;
+.row {
+    display: flex;
     height: 12px;
+}
+.cell {
+    flex: 1;
     border: 1px solid;
     transition: background-color 0.15s;
 }
