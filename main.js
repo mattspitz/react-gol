@@ -1,6 +1,7 @@
 var classNames = require('classnames');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var _ = require('underscore');
 
 var NUM_ROWS = 45;
 var NUM_COLS = 90;
@@ -88,6 +89,9 @@ var GameOfLife = React.createClass({
 });
 
 var Row = React.createClass({
+    shouldComponentUpdate: function(nextProps) {
+        return !_.isEqual(this.props.cells, nextProps.cells);
+    },
     render: function() {
         var cells = this.props.cells.map((cell, index) => {
             return <Cell key={index} state={cell} />;
@@ -97,6 +101,9 @@ var Row = React.createClass({
 });
 
 var Cell = React.createClass({
+    shouldComponentUpdate: function(nextProps) {
+        return this.props.state !== nextProps.state;
+    },
     render: function() {
         var classes = classNames({
             cell: true,
